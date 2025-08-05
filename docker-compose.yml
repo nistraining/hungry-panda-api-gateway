@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hungry-panda-api-gateway
+    ports:
+      - "8089:8089"
+    env_file:
+      - env.txt
+    environment:
+      SPRING_APPLICATION_NAME: hungry-panda-api-gateway
+      SERVER_PORT: 8089
+      OKTA_OAUTH2_ISSUER: https://dev-65982713.okta.com/oauth2/default
+      OKTA_OAUTH2_AUDIENCE: api://default
+      OKTA_OAUTH2_SCOPES: openid,profile,email,offline_access
+    networks:
+      - panda-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8089/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  panda-net:
+    external: true
