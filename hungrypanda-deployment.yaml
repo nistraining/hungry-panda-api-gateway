@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hungry-panda-api-gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: nisithpanda/hungry-panda-api-gateway:1.5
+        ports:
+        - containerPort: 8089
+        env:
+        - name: SPRING_APPLICATION_NAME
+          value: hungry-panda-api-gateway
+        - name: SERVER_PORT
+          value: "8089"
+
+        # Auth0 issuer URI (Spring Boot property env var)
+        - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+          value: https://dev-z4q44sumxx3m76z8.eu.auth0.com/
+
+        # Optional: If you want to pass audience as env var (read it in app if needed)
+        - name: AUTH0_AUDIENCE
+          value: https://hungry-panda-api-gateway/
+
+#        livenessProbe:
+#          httpGet:
+#            path: /actuator/health
+#            port: 8089
+#          initialDelaySeconds: 90
+#          periodSeconds: 30
+#          timeoutSeconds: 10
+#          failureThreshold: 3
+#        readinessProbe:
+#          httpGet:
+#            path: /actuator/health
+#            port: 8089
+#          initialDelaySeconds: 10
+#          periodSeconds: 10
+#          timeoutSeconds: 5
+#          failureThreshold: 3
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+spec:
+  selector:
+    app: api-gateway
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 8089
+    targetPort: 8089
+    nodePort: 30089  # Optional: can be omitted for auto-assignment

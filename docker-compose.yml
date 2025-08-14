@@ -13,9 +13,13 @@ services:
     environment:
       SPRING_APPLICATION_NAME: hungry-panda-api-gateway
       SERVER_PORT: 8089
-      OKTA_OAUTH2_ISSUER: https://dev-65982713.okta.com/oauth2/default
-      OKTA_OAUTH2_AUDIENCE: api://default
-      OKTA_OAUTH2_SCOPES: openid,profile,email,offline_access
+      
+      # Auth0 config (optional if you want to override properties)
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://dev-z4q44sumxx3m76z8.eu.auth0.com/
+      
+      # If you want to pass audience via env (optional, since handled in Java)
+      AUTH0_AUDIENCE: https://hungry-panda-api-gateway/
+      
     networks:
       - panda-net
     healthcheck:
