@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: api-gateway
-        image: nisithpanda/hungry-panda-api-gateway:1.7
+        image: 489855987447.dkr.ecr.eu-central-1.amazonaws.com/hungry-panda-api-gateway
         ports:
         - containerPort: 8089
         env:
@@ -62,7 +62,7 @@ metadata:
 spec:
   selector:
     app: api-gateway
-  type: NodePort
+  type: LoadBalancer
   ports:
   - protocol: TCP
     port: 8089
